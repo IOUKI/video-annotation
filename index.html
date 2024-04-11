@@ -5,8 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Annotation</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="./script.js"></script>
 </head>
-<body class="bg-gray-900">
-    
+<body class="bg-gray-900 text-white">
+    <section class="w-full">
+        <div class="w-full grid grid-cols-3 gap-3">
+            <!-- 影片 -->
+            <div id="video" class="col-span-2">
+                <video class="w-full" controls src="./video.mp4">
+                    <!-- <source src="./video.mp4" type="video/mp4"> -->
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <!-- 標記輸入 -->
+            <div class="bg-gray-800 p-3 text-xl">
+                <div class="mb-3 grid grid-cols-3 gap-3">
+                    <button id="startTimeLabelBtn" class="p-1 bg-blue-600 rounded-md hover:bg-blue-800 duration-300">
+                        起始
+                    </button>
+                    <button id="endTimeLabelBtn" class="p-1 bg-blue-600 rounded-md hover:bg-blue-800 duration-300">
+                        結束
+                    </button>
+                    <button id="resetTimeLabelBtn" class="p-1 bg-blue-600 rounded-md hover:bg-blue-800 duration-300">
+                        清除
+                    </button>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="classSelect">標記類別</label>
+                    <select id="classSelect" class="bg-gray-700 p-1 w-full rounded-md">
+                        <option value="">請選擇標記類別</option>
+                        <option value="">01</option>
+                        <option value="">02</option>
+                        <option value="">03</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="startTimeLabelInput">起始時間</label>
+                    <input type="text" id="startTimeLabelInput" class="bg-gray-700 p-1 w-full rounded-md" readonly>
+                </div>
+
+                <div class="mb-3">
+                    <label for="endTimeLabelInput">結束時間</label>
+                    <input type="text" id="endTimeLabelInput" class="bg-gray-700 p-1 w-full rounded-md" readonly>
+                </div>
+
+                <div class="mb-3 flex justify-end">
+                    <button class="py-1 px-3 bg-green-600 rounded-md hover:bg-green-800 duration-300">新增</button>
+                </div>
+            </div>
+            <!-- 時間條顯示 -->
+            <div class="col-span-3 bg-blue-700">
+                
+            </div>
+        </div>
+    </section>
 </body>
 </html>

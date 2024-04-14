@@ -168,5 +168,5 @@ dom.video.addEventListener('keydown', (e) => {
 
 dom.video.addEventListener('timeupdate', () => {
     let currentTime = getVideoCurrentTime()
-    dom.currentTime.innerHTML = `當前影片時間: ${formatTimeFromSecondsWithMilliseconds(currentTime)}`    
+    dom.currentTime.innerHTML = `當前影片時間: ${formatTimeFromSecondsWithMilliseconds(currentTime)}`
 })

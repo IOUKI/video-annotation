@@ -166,7 +166,7 @@ dom.video.addEventListener('keydown', (e) => {
     }
 })
 
-setInterval(() => {
+dom.video.addEventListener('timeupdate', () => {
     let currentTime = getVideoCurrentTime()
-    dom.currentTime.innerHTML = `當前影片時間: ${formatTimeFromSecondsWithMilliseconds(currentTime)}`
-}, 1);
+    dom.currentTime.innerHTML = `當前影片時間: ${formatTimeFromSecondsWithMilliseconds(currentTime)}`    
+})

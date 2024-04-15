@@ -26,10 +26,11 @@
                 </div>
             </div>
             <!-- 影片 -->
-            <div id="video" class="col-span-2">
+            <div id="video" class="relative col-span-2 bg-gray-800">
                 <video class="w-full" controls src="" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
+                <span id="currentTime" class="absolute bottom-0 left-1/2 text-xl">current time</span>
             </div>
             <!-- 標記輸入 -->
             <div class="bg-gray-800 p-3 text-xl">
@@ -46,10 +47,6 @@
 
                     <input type="text" id="changeXInput" class="bg-gray-700 p-1 w-full rounded-md col-span-2" value="0.25" placeholder="尚未新增起始時間">
                     <button id="changeXBtn" class="p-1 bg-green-600 rounded-md hover:bg-green-800 duration-300">變更x</button>
-                </div>
-                <hr class="mb-3">
-                <div class="mb-3">
-                    <h1 id="currentTime"></h1>
                 </div>
                 <hr class="mb-3">
                 <!-- 新增標記 -->

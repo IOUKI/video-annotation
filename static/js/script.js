@@ -81,6 +81,23 @@ function resetTimeLabel() {
     dom.classSelect.value = ''
 }
 
+function renderDataList() {
+    dom.dataList.innerHTML = ''
+    data.forEach((item, index) => {
+        dom.dataList.innerHTML += `
+        <div class="bg-gray-800 p-3">
+            <p>類別：${item['class']}</p>
+            <p>起始：${item['startTime']}</p>
+            <p>結束：${item['endTime']}</p>
+            <p>備註：${item['remark']}</p>
+            <div class="flex justify-end">
+                <button id="${index}" class="deleteItemData py-1 px-3 bg-red-600 rounded-md hover:bg-red-800 duration-300">移除</button>
+            </div>
+        </div>
+        `
+    })
+}
+
 // 新增標記
 function addAnnotation() {
     const annotationClass = dom.classSelect.value
@@ -133,22 +150,7 @@ function addAnnotation() {
     })
     // console.log(data)
 
-    dom.dataList.innerHTML = ''
-    data.forEach((item, index) => {
-        dom.dataList.innerHTML += `
-        <div class="bg-gray-800 p-3">
-            <p>類別：${item['class']}</p>
-            <p>起始：${item['startTime']}</p>
-            <p>結束：${item['endTime']}</p>
-            <p>備註：${item['remark']}</p>
-            <div class="flex justify-end">
-                <button class="deleteItemData py-1 px-3 bg-red-600 rounded-md hover:bg-red-800 duration-300">移除</button>
-            </div>
-        </div>
-        `
-    })
-
-    console.log(data)
+    renderDataList()
 
     dom.startTimeLabelInput.value = endTime
     dom.endTimeLabelInput.value = ''
@@ -171,7 +173,7 @@ function exportToExcel() {
         ])
     }
 
-    console.log(xlsxData)
+    // console.log(xlsxData)
 
     // 创建一个工作簿
     let wb = XLSX.utils.book_new();
@@ -200,6 +202,16 @@ function exportToExcel() {
     window.URL.revokeObjectURL(url);
 }
 
+window.addEventListener('load', () => {
+    // 移除標註資料
+    $(document).on('click', '.deleteItemData', function () {
+        const deleteIndex = parseInt(this.id)
+        data = data.filter((_, index) => index !== deleteIndex)
+        console.log(data)
+        renderDataList()
+    })
+})
+
 window.addEventListener('DOMContentLoaded', () => {
     getVideoList()
 
@@ -224,6 +236,11 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         x = parseFloat(dom.changeXInput.value)
     })
+
+    dom.video.addEventListener('timeupdate', () => {
+        let currentTime = getVideoCurrentTime()
+        dom.currentTime.innerHTML = `${formatTimeFromSecondsWithMilliseconds(currentTime)}`
+    })
 })
 
 dom.video.addEventListener('keydown', (e) => {
@@ -233,9 +250,4 @@ dom.video.addEventListener('keydown', (e) => {
     if (e.keyCode == 90) {
         dom.video.currentTime -= z
     }
-})
-
-dom.video.addEventListener('timeupdate', () => {
-    let currentTime = getVideoCurrentTime()
-    dom.currentTime.innerHTML = `當前影片時間: ${formatTimeFromSecondsWithMilliseconds(currentTime)}`
 })

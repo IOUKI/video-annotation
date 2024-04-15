@@ -1,5 +1,6 @@
 import { formatTimeFromSecondsWithMilliseconds, formatTimeToSecond } from "./module/timeFormat.js"
 import fetchData from "./module/fetchData.js"
+import toast from "./module/toast.js"
 
 let data = []
 let x = 0.25
@@ -51,10 +52,12 @@ async function getVideoList() {
 function addNewClass() {
     const newClass = dom.newClassInput.value
     if (newClass === '') {
-        alert('請輸入類別名稱！')
+        toast('warning', '請輸入類別名稱')
         return
     }
     dom.classSelect.innerHTML += `<option value="${newClass}">${newClass}</option>`
+
+    toast('success', '類別新增成功')
 }
 
 // 取得影片時間(秒，含毫秒)
@@ -108,15 +111,15 @@ function addAnnotation() {
     const endSec = formatTimeToSecond(endTime)
 
     if (annotationClass === '') {
-        alert('請選擇標註類別')
+        toast('warning', '請選擇標註類別')
         return
     }
     if (startTime === '') {
-        alert('請新增起始時間')
+        toast('warning', '請新增起始時間')
         return
     }
     if (endTime === '') {
-        alert('請新增結束時間')
+        toast('warning', '請新增結束時間')
         return
     }
 
@@ -131,7 +134,7 @@ function addAnnotation() {
         //     checkStatus = false
         // } else 
         if (endSec <= startSec) {
-            alert('起始時間必須小於結束時間')
+            toast('warning', '起始時間必須小於結束時間')
             return
         }
     }
@@ -209,6 +212,7 @@ window.addEventListener('load', () => {
         data = data.filter((_, index) => index !== deleteIndex)
         console.log(data)
         renderDataList()
+        toast('success', '標註移除成功')
     })
 })
 
@@ -224,17 +228,19 @@ window.addEventListener('DOMContentLoaded', () => {
 
     dom.changeZBtn.addEventListener('click', () => {
         if (dom.changeZInput.value == '') {
-            alert('請輸入z的數值')
+            toast('warning', '請輸入z的數值')
             return
         }
         z = parseFloat(dom.changeZInput.value)
+        toast('success', 'z數值變更成功')
     })
     dom.changeXBtn.addEventListener('click', () => {
-        if (dom.changeXInput.value) {
-            alert('請輸入x的數值')
+        if (dom.changeXInput.value == '') {
+            toast('warning', '請輸入x的數值')
             return
         }
         x = parseFloat(dom.changeXInput.value)
+        toast('success', 'x數值變更成功')
     })
 
     dom.video.addEventListener('timeupdate', () => {

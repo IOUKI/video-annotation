@@ -44,7 +44,7 @@ async function getVideoList() {
         dom.videoSelect.innerHTML += `<option value="${item}">${item}</option>`
     })
     $(dom.videoSelect).on('change', function () {
-        dom.video.src = `/static/videos/${this.value}`
+        dom.video.src = `/video/${this.value}`
     })
 }
 

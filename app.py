@@ -1,11 +1,9 @@
 from flask import Flask, render_template
-from flask_cors import CORS
+from module.api import apiRouter
 
 app = Flask(__name__)
 
-CORS(app)
-
-# ui = FlaskUI(app, width=1000, height=1000)
+app.register_blueprint(apiRouter, url_prefix='/api')
 
 @app.get('/')
 def index():

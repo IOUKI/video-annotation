@@ -1,4 +1,5 @@
-import { formatTimeFromSecondsWithMilliseconds, formatTimeToSecond } from "./timeFormat.js"
+import { formatTimeFromSecondsWithMilliseconds, formatTimeToSecond } from "./module/timeFormat.js"
+import fetchData from "./module/fetchData.js"
 
 let data = []
 let x = 0.25
@@ -6,6 +7,8 @@ let z = 0.25
 
 const dom = {
     video: document.getElementsByTagName('video')[0],
+
+    videoSelect: document.getElementById('videoSelect'),
 
     changeZBtn: document.getElementById('changeZBtn'),
     changeXBtn: document.getElementById('changeXBtn'),
@@ -27,6 +30,21 @@ const dom = {
     addAnnotationBtn: document.getElementById('addAnnotationBtn'),
 
     dataList: document.getElementById('dataList'),
+
+    exportExcelBtn: document.getElementById('exportExcelBtn'),
+}
+
+// 取得影片清單
+async function getVideoList() {
+    const response = await fetchData('/video/list')
+    if (response.status !== 200) return
+    const data = await response.json()
+    data.forEach(item => {
+        dom.videoSelect.innerHTML += `<option value="${item}">${item}</option>`
+    })
+    $(dom.videoSelect).on('change', function () {
+        dom.video.src = `/static/videos/${this.value}`
+    })
 }
 
 // 新增標記類別
@@ -34,7 +52,7 @@ function addNewClass() {
     const newClass = dom.newClassInput.value
     if (newClass === '') {
         alert('請輸入類別名稱！')
-        return 
+        return
     }
     dom.classSelect.innerHTML += `<option value="${newClass}">${newClass}</option>`
 }
@@ -78,11 +96,11 @@ function addAnnotation() {
     }
     if (startTime === '') {
         alert('請新增起始時間')
-        return 
+        return
     }
     if (endTime === '') {
         alert('請新增結束時間')
-        return 
+        return
     }
 
     // 時間資料確認
@@ -130,28 +148,79 @@ function addAnnotation() {
         `
     })
 
+    console.log(data)
+
     dom.startTimeLabelInput.value = endTime
     dom.endTimeLabelInput.value = ''
+    dom.remarkInput.value = ''
+}
+
+function exportToExcel() {
+    // 你的数据，以 JSON 格式表示
+    let xlsxData = [
+        ['ID', 'filename', 'start', 'end', 'remark'], // header
+    ];
+    const filename = dom.videoSelect.value.split('.')[0]
+    for (let i = 0; i < data.length; i++) {
+        xlsxData.push([
+            i,
+            filename,
+            data[i]['startSec'],
+            data[i]['endSec'],
+            data[i]['remark']
+        ])
+    }
+
+    console.log(xlsxData)
+
+    // 创建一个工作簿
+    let wb = XLSX.utils.book_new();
+    // 将数据添加到工作表中
+    let ws = XLSX.utils.aoa_to_sheet(xlsxData);
+    // 将工作表添加到工作簿中
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    // 将工作簿转换为二进制数据
+    let wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+    // 将二进制数据转换为 Blob 对象
+    let blob = new Blob([wbout], { type: 'application/octet-stream' });
+
+    // 创建一个下载链接并设置相关属性
+    let url = window.URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = 'export.xlsx';
+
+    // 模拟点击下载链接
+    document.body.appendChild(a);
+    a.click();
+
+    // 释放资源
+    window.URL.revokeObjectURL(url);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+    getVideoList()
+
     dom.startTimeLabelBtn.addEventListener('click', addStartTimeLabel)
     dom.endTimeLabelBtn.addEventListener('click', addEndTimeLabel)
     dom.resetTimeLabelBtn.addEventListener('click', resetTimeLabel)
     dom.addClassBtn.addEventListener('click', addNewClass)
     dom.addAnnotationBtn.addEventListener('click', addAnnotation)
+    dom.exportExcelBtn.addEventListener('click', exportToExcel)
 
     dom.changeZBtn.addEventListener('click', () => {
         if (dom.changeZInput.value == '') {
             alert('請輸入z的數值')
-            return 
+            return
         }
         z = parseFloat(dom.changeZInput.value)
     })
     dom.changeXBtn.addEventListener('click', () => {
         if (dom.changeXInput.value) {
             alert('請輸入x的數值')
-            return 
+            return
         }
         x = parseFloat(dom.changeXInput.value)
     })

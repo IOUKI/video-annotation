@@ -163,7 +163,7 @@ function addAnnotation() {
 function exportToExcel() {
     // 你的数据，以 JSON 格式表示
     let xlsxData = [
-        ['ID', 'filename', 'start', 'end', 'remark'], // header
+        ['ID', 'filename', 'start', 'end', 'duration', 'token', 'remark'], // header
     ];
     const filename = dom.videoSelect.value.split('.')[0]
     for (let i = 0; i < data.length; i++) {
@@ -172,6 +172,8 @@ function exportToExcel() {
             filename,
             data[i]['startSec'],
             data[i]['endSec'],
+            parseFloat(data[i]['endSec']) - parseFloat(data[i]['startSec']),
+            data[i]['class'],
             data[i]['remark']
         ])
     }

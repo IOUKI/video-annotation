@@ -38,13 +38,13 @@ def run_server(port):
     app.run(host='127.0.0.1', port=port, debug=False)
 
 if __name__ == '__main__':
-    # port = find_free_port()
+    port = find_free_port()
 
-    # # 使用線程啟動伺服器
-    # server_thread = threading.Thread(target=run_server, args=(port,))
-    # server_thread.start()
+    # 使用線程啟動伺服器
+    server_thread = threading.Thread(target=run_server, args=(port,))
+    server_thread.start()
 
-    # # 打開瀏覽器
-    # webbrowser.open(f"http://127.0.0.1:{port}")
+    # 打開瀏覽器
+    webbrowser.open(f"http://127.0.0.1:{port}")
 
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    # app.run(host='127.0.0.1', port=5000, debug=True)

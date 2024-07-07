@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Annotation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script defer type="module" src="/static/js/annotation.js"></script>
+  </head>
+  <body class="bg-gray-900 text-white">
+    <section class="w-full">
+      <div class="w-full grid grid-cols-3 gap-3">
+        <!-- bar -->
+        <div class="col-span-3 p-3 flex justify-between bg-gray-800 text-xl">
+          <div class="h-full flex justify-start items-center">
+            <a href="/chart" class="px-3 py-1.5 hover:bg-gray-700 rounded-md duration-150">圖表製作</a>
+          </div>
+          <div>
+            <label for="videoSelect">影片</label>
+            <select id="videoSelect" class="bg-gray-700 p-1 rounded-md">
+              <option value="">請選擇影片</option>
+            </select>
+          </div>
+
+          <div>
+            <button id="initButton" class="p-1 bg-gray-600 rounded-md hover:bg-gray-400 duration-300">資料初始化</button>
+            <button id="exportExcelBtn" class="p-1 bg-gray-600 rounded-md hover:bg-gray-400 duration-300">匯出Excel</button>
+          </div>
+        </div>
+        <!-- 影片 -->
+        <div id="video" class="relative col-span-2 bg-gray-800">
+          <video class="w-full" controls src="" type="video/mp4">Your browser does not support the video tag.</video>
+          <span id="currentTime" class="absolute bottom-0 left-1/2 text-xl">current time</span>
+        </div>
+        <!-- 標記輸入 -->
+        <div class="bg-gray-800 p-3 text-xl">
+          <!-- 新增標記類別 -->
+          <div class="mb-3 grid grid-cols-3 gap-3">
+            <input type="text" id="newClassInput" class="bg-gray-700 p-1 w-full rounded-md col-span-2" placeholder="類別名稱" />
+            <button id="addClassBtn" class="p-1 bg-green-600 rounded-md hover:bg-green-800 duration-300">新增類別</button>
+          </div>
+          <hr class="mb-3" />
+          <div class="mb-3 grid grid-cols-3 gap-3">
+            <h2 class="col-span-3">影片移動步伐(秒)，z倒退x往前</h2>
+            <input type="text" id="changeZInput" class="bg-gray-700 p-1 w-full rounded-md col-span-2" value="0.25" placeholder="尚未新增起始時間" />
+            <button id="changeZBtn" class="p-1 bg-green-600 rounded-md hover:bg-green-800 duration-300">變更z</button>
+
+            <input type="text" id="changeXInput" class="bg-gray-700 p-1 w-full rounded-md col-span-2" value="0.25" placeholder="尚未新增起始時間" />
+            <button id="changeXBtn" class="p-1 bg-green-600 rounded-md hover:bg-green-800 duration-300">變更x</button>
+          </div>
+          <hr class="mb-3" />
+          <!-- 新增標記 -->
+          <div class="mb-3 grid grid-cols-3 gap-3">
+            <button id="startTimeLabelBtn" class="p-1 bg-blue-600 rounded-md hover:bg-blue-800 duration-300">起始</button>
+            <button id="endTimeLabelBtn" class="p-1 bg-blue-600 rounded-md hover:bg-blue-800 duration-300">結束</button>
+            <button id="resetTimeLabelBtn" class="p-1 bg-blue-600 rounded-md hover:bg-blue-800 duration-300">清除</button>
+          </div>
+
+          <div class="mb-3">
+            <label for="classSelect">標記類別</label>
+            <select id="classSelect" class="bg-gray-700 p-1 w-full rounded-md">
+              <option value="">請選擇標記類別</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="startTimeLabelInput">起始時間</label>
+            <input type="text" id="startTimeLabelInput" class="bg-gray-700 p-1 w-full rounded-md" placeholder="尚未新增起始時間" />
+          </div>
+
+          <div class="mb-3">
+            <label for="endTimeLabelInput">結束時間</label>
+            <input type="text" id="endTimeLabelInput" class="bg-gray-700 p-1 w-full rounded-md" placeholder="尚未新增結束時間" />
+          </div>
+
+          <div class="mb-3 grid grid-cols-1">
+            <label for="remarkInput">備註</label>
+            <textarea id="remarkInput" class="bg-gray-700 p-1 w-full rounded-md" cols="30" rows="3"></textarea>
+          </div>
+
+          <div class="mb-3 flex justify-end">
+            <button id="addAnnotationBtn" class="py-1 px-3 bg-green-600 rounded-md hover:bg-green-800 duration-300">新增標註</button>
+          </div>
+        </div>
+        <!-- data list -->
+        <div class="col-span-3 h-72 overflow-y-scroll">
+          <div id="dataList" class="grid grid-cols-6 gap-3"></div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

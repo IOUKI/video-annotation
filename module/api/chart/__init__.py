@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask.views import MethodView
 import os
-# import pandas as pd
 import openpyxl
 
 router = Blueprint('chart', __name__)

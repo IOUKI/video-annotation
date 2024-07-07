@@ -8,13 +8,16 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script defer type="module" src="/static/js/script.js"></script>
+    <script defer type="module" src="/static/js/annotation.js"></script>
   </head>
   <body class="bg-gray-900 text-white">
     <section class="w-full">
       <div class="w-full grid grid-cols-3 gap-3">
         <!-- bar -->
         <div class="col-span-3 p-3 flex justify-between bg-gray-800 text-xl">
+          <div class="h-full flex justify-start items-center">
+            <a href="/chart" class="px-3 py-1.5 hover:bg-gray-700 rounded-md duration-150">圖表製作</a>
+          </div>
           <div>
             <label for="videoSelect">影片</label>
             <select id="videoSelect" class="bg-gray-700 p-1 rounded-md">
@@ -23,6 +26,7 @@
           </div>
 
           <div>
+            <button id="initButton" class="p-1 bg-gray-600 rounded-md hover:bg-gray-400 duration-300">資料初始化</button>
             <button id="exportExcelBtn" class="p-1 bg-gray-600 rounded-md hover:bg-gray-400 duration-300">匯出Excel</button>
           </div>
         </div>

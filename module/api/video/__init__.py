@@ -7,5 +7,5 @@ router = Blueprint('videoRouter', __name__)
 def getVideoList():
     path = os.getcwd() + '/videos'
     videoList = os.listdir(path)
-    videoList.remove('放置影片')
+    videoList.remove('README.md')
     return jsonify(videoList), 200

@@ -1,15 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Video Annotation</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script defer type="module" src="/static/js/annotation.js"></script>
-  </head>
+{% extends 'layout.html' %}
+
+{% block title %}
+  影片標註
+{% endblock %}
+
+{% block body %}
   <body class="bg-gray-900 text-white">
     <section class="w-full">
       <div class="w-full grid grid-cols-3 gap-3">
@@ -92,4 +87,8 @@
       </div>
     </section>
   </body>
-</html>
+{% endblock %}
+
+{% block script %}
+  <script defer type="module" src="/static/js/annotation.js"></script>
+{% endblock %}

@@ -1,32 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Video Annotation</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/static/vendors/apexcharts/apexcharts.css"></script>
-    <script src="/static/vendors/apexcharts/apexcharts.min.js"></script>
-    <script defer type="module" src="/static/js/chart.js"></script>
-  </head>
-  <body class="">
+{% extends 'layout.html'%}
+
+{% block title %}
+  圖表製作
+{% endblock %}
+
+{% block body %}
+  <body>
     <section class="w-full">
       <!-- bar -->
       <div class="p-3 text-white flex justify-between items-center bg-gray-800 text-xl">
         <a href="/" class="px-3 py-1.5 hover:bg-gray-700 rounded-md duration-150">返回</a>
         <!-- 上傳檔案 -->
-        <div>
-          <form>
-            <label for="fileInput">上傳檔案</label>
-            <input type="file" id="fileInput" class="bg-gray-700 p-1 rounded-md" />
-            <button type="button" id="uploadButton" class="px-3 py-1.5 hover:bg-gray-700 rounded-md duration-150">上傳</button>
+        <div class="flex space-x-3">
+          <form class="max-w-sm flex">
+            <label for="file-input" class="sr-only">Choose file</label>
+            <input type="file" name="file-input" id="fileInput" class="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 file:bg-gray-50 file:border-0 file:me-4 file:py-3 file:px-4 dark:file:bg-neutral-700 dark:file:text-neutral-400" />
           </form>
+          <button type="button" id="uploadButton" class="px-3 py-1.5 bg-gray-600 hover:bg-gray-400 rounded-md duration-150">上傳</button>
         </div>
+      </div>
+      <div class="grid grid-cols-1 gap-y-3">
+        <h3>事件</h3>
+        <input type="text" id="category" class="border-2 border-gray-900" />
+        <h3>事件顏色</h3>
+        <input type="text" id="colors" class="border-2 border-gray-900" />
+        <h3>最大分鐘數</h3>
+        <input type="text" id="maxMin" class="border-2 border-gray-900" />
+      </div>
+      <div>
+        <button id="renderChartButton">生成圖表</button>
       </div>
       <div id="chart"></div>
     </section>
   </body>
-</html>
+{% endblock %}
+
+{% block script %}
+  <script type="module" src="static/js/chart.js"></script>
+{% endblock %}

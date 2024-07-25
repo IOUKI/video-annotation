@@ -1,13 +1,20 @@
-import fetchData from './module/fetchData.js'
+let series = []
+let allEvent = []
 
 const dom = {
   fileInput: document.getElementById('fileInput'),
   uploadButton: document.getElementById('uploadButton'),
+  category: document.getElementById('category'),
+  colors: document.getElementById('colors'),
+  maxMin: document.getElementById('maxMin'),
+  renderChartButton: document.getElementById('renderChartButton'),
 }
 
 // 上傳檔案
 const uploadFileHandler = async () => {
   const file = dom.fileInput.files[0]
+  // console.log(file)
+  if (typeof file === 'undefined') return alert('請選擇檔案')
   const formData = new FormData()
   formData.append('file', file)
   const response = await fetch('/api/chart', {
@@ -15,14 +22,12 @@ const uploadFileHandler = async () => {
     body: formData
   })
   const data = await response.json()
-  console.log(data)
-  renderChart(data)
+  // console.log(data)
+  // renderChart(data)
+  filterData(data)
 }
 
-// 渲染圖表
-const renderChart = async (data) => {
-  console.log(data)
-
+const filterData = (data) => {
   // 將時間字串轉換為秒數
   function convertToSeconds(timeString) {
     const [minutes, seconds] = timeString.split(':').map(Number);
@@ -56,8 +61,8 @@ const renderChart = async (data) => {
   // 檢查時間是否有按照順序排列
   isTimelineSorted(data.time)
 
-  const allEvent = []
-  const series = []
+  allEvent = []
+  series = []
   console.log(allEvent, series)
 
   // 整理list內的資料
@@ -72,7 +77,7 @@ const renderChart = async (data) => {
     }
   })
   console.log('整理list內的資料')
-  
+
   // 分類出全部的事件
   allEvent.forEach(element => {
     series.push({ name: element, data: [] })
@@ -110,6 +115,20 @@ const renderChart = async (data) => {
   })
   console.log('依照事件分類list資料')
 
+  dom.category.value = allEvent.join(',')
+  let defaultColors = [
+    "#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0",
+    "#3F51B5", "#546E7A", "#D4526E", "#8D5B4C", "#F86624",
+    "#D7263D", "#1B998B", "#2E294E", "#F46036", "#E2C044"
+  ]
+  dom.colors.value = defaultColors.slice(0, allEvent.length).join(',')
+}
+
+// 渲染圖表
+const renderChart = async () => {
+  document.getElementById('chart').innerHTML = ''
+  // console.log(data)
+
   // chart option
   let options = {
     series: series,
@@ -124,16 +143,18 @@ const renderChart = async (data) => {
         rangeBarGroupRows: true
       }
     },
-    colors: [
-      "#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0",
-      "#3F51B5", "#546E7A", "#D4526E", "#8D5B4C", "#F86624",
-      "#D7263D", "#1B998B", "#2E294E", "#F46036", "#E2C044"
-    ],
+    // colors: [
+    //   "#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0",
+    //   "#3F51B5", "#546E7A", "#D4526E", "#8D5B4C", "#F86624",
+    //   "#D7263D", "#1B998B", "#2E294E", "#F46036", "#E2C044"
+    // ],
+    colors: dom.colors.value.split(','),
     fill: {
       type: 'solid'
     },
     xaxis: {
       type: 'datetime',
+      max: new Date(2023, 1, 1, 0, dom.maxMin.value, 0).getTime(),
       labels: {
         formatter: function (val) {
           var minutes = new Date(val).getMinutes();
@@ -190,13 +211,14 @@ const renderChart = async (data) => {
   })
 
   // 將秒數轉換為分鐘和秒數
-  function secondsToMinutesAndSeconds(seconds) {
-    var minutes = Math.floor(seconds / 60);
-    var remainingSeconds = seconds % 60;
-    return minutes + " 分 " + remainingSeconds + " 秒";
-  }
+  // function secondsToMinutesAndSeconds(seconds) {
+  //   var minutes = Math.floor(seconds / 60);
+  //   var remainingSeconds = seconds % 60;
+  //   return minutes + " 分 " + remainingSeconds + " 秒";
+  // }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   dom.uploadButton.addEventListener('click', uploadFileHandler)
+  dom.renderChartButton.addEventListener('click', renderChart)
 })

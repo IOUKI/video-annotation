@@ -1,11 +1,13 @@
+import toast from "./module/toast.js"
+
 let series = []
 let allEvent = []
 
 const dom = {
+  colorTest: document.getElementById('colorTest'),
   fileInput: document.getElementById('fileInput'),
   uploadButton: document.getElementById('uploadButton'),
-  category: document.getElementById('category'),
-  colors: document.getElementById('colors'),
+  eventsDiv: document.getElementById('eventsDiv'),
   maxMin: document.getElementById('maxMin'),
   renderChartButton: document.getElementById('renderChartButton'),
 }
@@ -28,6 +30,8 @@ const uploadFileHandler = async () => {
 }
 
 const filterData = (data) => {
+  // console.log(data)
+
   // 將時間字串轉換為秒數
   function convertToSeconds(timeString) {
     const [minutes, seconds] = timeString.split(':').map(Number);
@@ -63,7 +67,6 @@ const filterData = (data) => {
 
   allEvent = []
   series = []
-  console.log(allEvent, series)
 
   // 整理list內的資料
   data['timeArr'] = data.time.split(',')
@@ -71,7 +74,7 @@ const filterData = (data) => {
   data['list'] = []
   data.timeArr.forEach((_, timeArrIndex) => {
     data['list'].push({ event: data.processArr[timeArrIndex], time: convertToTimeString(data.timeArr[timeArrIndex]) })
-    console.log({ event: data.processArr[timeArrIndex], time: convertToTimeString(data.timeArr[timeArrIndex]) })
+    // console.log({ event: data.processArr[timeArrIndex], time: convertToTimeString(data.timeArr[timeArrIndex]) })
     if (!allEvent.includes(data.processArr[timeArrIndex])) {
       allEvent.push(data.processArr[timeArrIndex])
     }
@@ -115,19 +118,38 @@ const filterData = (data) => {
   })
   console.log('依照事件分類list資料')
 
-  dom.category.value = allEvent.join(',')
+  // 最大時間
+  dom.maxMin.value = parseInt(data.list[data.list.length - 1].time.split(':')[0]) + 10
+
+  // 預設顏色
   let defaultColors = [
     "#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0",
     "#3F51B5", "#546E7A", "#D4526E", "#8D5B4C", "#F86624",
     "#D7263D", "#1B998B", "#2E294E", "#F46036", "#E2C044"
   ]
-  dom.colors.value = defaultColors.slice(0, allEvent.length).join(',')
+
+  // 渲染事件顏色選擇
+  dom.eventsDiv.innerHTML = ''
+  allEvent.forEach((category, index) => {
+    dom.eventsDiv.innerHTML += `
+      <form class="text-center">
+        <label for="${category}-color" class="block text-lg font-medium mb-2">${category}</label>
+        <input type="color" id="${category}-color" class="category-color" value="${defaultColors[index]}" title="Choose your color" />
+      </form>
+    `
+  })
 }
 
 // 渲染圖表
 const renderChart = async () => {
+  if (series.length === 0) return toast('error', '請先上傳檔案')
+
   document.getElementById('chart').innerHTML = ''
   // console.log(data)
+
+  const categoryColors = document.querySelectorAll('.category-color')
+  const colors = Array.from(categoryColors).map(color => color.value)
+  // console.log('colors:', colors)
 
   // chart option
   let options = {
@@ -143,12 +165,7 @@ const renderChart = async () => {
         rangeBarGroupRows: true
       }
     },
-    // colors: [
-    //   "#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0",
-    //   "#3F51B5", "#546E7A", "#D4526E", "#8D5B4C", "#F86624",
-    //   "#D7263D", "#1B998B", "#2E294E", "#F46036", "#E2C044"
-    // ],
-    colors: dom.colors.value.split(','),
+    colors: colors,
     fill: {
       type: 'solid'
     },
@@ -209,13 +226,6 @@ const renderChart = async () => {
     timeDict = convertDictionaryValuesToMinutes(timeDict)
     console.log(`${group.name} 總時間: `, timeDict)
   })
-
-  // 將秒數轉換為分鐘和秒數
-  // function secondsToMinutesAndSeconds(seconds) {
-  //   var minutes = Math.floor(seconds / 60);
-  //   var remainingSeconds = seconds % 60;
-  //   return minutes + " 分 " + remainingSeconds + " 秒";
-  // }
 }
 
 window.addEventListener('DOMContentLoaded', () => {

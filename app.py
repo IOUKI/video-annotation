@@ -47,4 +47,4 @@ if __name__ == '__main__':
     # 打開瀏覽器
     webbrowser.open(f"http://127.0.0.1:{port}")
 
-    # app.run(host='127.0.0.1', port=5000, debug=True)
+    # app.run(debug=True)

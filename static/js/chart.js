@@ -10,6 +10,7 @@ const dom = {
   eventsDiv: document.getElementById('eventsDiv'),
   maxMin: document.getElementById('maxMin'),
   renderChartButton: document.getElementById('renderChartButton'),
+  timeLineRangeSlider: document.getElementById('chart-time-line-min-and-max-range-slider'),
 }
 
 // 上傳檔案
@@ -29,6 +30,7 @@ const uploadFileHandler = async () => {
   filterData(data)
 }
 
+// 過濾圖表資料
 const filterData = (data) => {
   // console.log(data)
 
@@ -119,7 +121,9 @@ const filterData = (data) => {
   console.log('依照事件分類list資料')
 
   // 最大時間
-  dom.maxMin.value = parseInt(data.list[data.list.length - 1].time.split(':')[0]) + 10
+  const dataMaxMinute = parseInt(data.list[data.list.length - 1].time.split(':')[0])
+  dom.maxMin.value = Math.ceil(dataMaxMinute / 10) * 10 // 取得最多分鐘最接近的10倍數
+  dom.timeLineRangeSlider.value = dom.maxMin.value
 
   // 預設顏色
   let defaultColors = [
@@ -174,25 +178,33 @@ const renderChart = async () => {
       max: new Date(2023, 1, 1, 0, dom.maxMin.value, 0).getTime(),
       labels: {
         formatter: function (val) {
-          var minutes = new Date(val).getMinutes();
-          var seconds = new Date(val).getSeconds();
-          return minutes + ":" + seconds;
+          // 僅顯示每 10 分鐘的時間
+          let date = new Date(val);
+          let minutes = date.getMinutes();
+          let hours = date.getHours();
+          if (minutes % 10 === 0) {
+            return `${minutes < 10 ? '0' : ''}${minutes}`;
+          } else {
+            return '';
+          }
         }
-      }
+      },
+      tickAmount: Math.ceil(dom.maxMin.value / 10) // 設定 x 軸刻度數量，間隔為 10 分鐘
     },
     legend: {
       position: 'right'
     },
     tooltip: {
       custom: function (opts) {
-        let min1 = new Date(opts.y1).getMinutes()
-        let sec1 = new Date(opts.y1).getSeconds()
-        let min2 = new Date(opts.y2).getMinutes()
-        let sec2 = new Date(opts.y2).getSeconds()
-        return `時間: ${min1}:${sec1} - ${min2}:${sec2}`
+        let min1 = new Date(opts.y1).getMinutes();
+        let sec1 = new Date(opts.y1).getSeconds();
+        let min2 = new Date(opts.y2).getMinutes();
+        let sec2 = new Date(opts.y2).getSeconds();
+        return `時間: ${min1}:${sec1} - ${min2}:${sec2}`;
       }
     }
-  };
+};
+
 
   // apexchart init
   let chart = new ApexCharts(document.querySelector("#chart"), options);
@@ -228,7 +240,13 @@ const renderChart = async () => {
   })
 }
 
+const timeLineRangeSliderChangeHandle = () => {
+    const value = dom.timeLineRangeSlider.value
+    dom.maxMin.value = value
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   dom.uploadButton.addEventListener('click', uploadFileHandler)
   dom.renderChartButton.addEventListener('click', renderChart)
+  dom.timeLineRangeSlider.addEventListener('input', timeLineRangeSliderChangeHandle)
 })

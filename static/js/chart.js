@@ -1,7 +1,8 @@
 import toast from "./module/toast.js"
 
-let series = []
-let allEvent = []
+let series = [] // 圖表資料
+let allEvent = [] // 所有事件類別
+let xLabelTemp = [] // 出現過的x label
 
 const dom = {
   colorTest: document.getElementById('colorTest'),
@@ -121,8 +122,9 @@ const filterData = (data) => {
   console.log('依照事件分類list資料')
 
   // 最大時間
-  const dataMaxMinute = parseInt(data.list[data.list.length - 1].time.split(':')[0])
-  dom.maxMin.value = Math.ceil(dataMaxMinute / 10) * 10 // 取得最多分鐘最接近的10倍數
+  const dataMaxMinute = parseInt(data.list[data.list.length - 1].time.split(':')[0]) + 1
+  dom.maxMin.value = Math.ceil(dataMaxMinute / 10) * 5 // 取得最多分鐘最接近的5倍數
+  dom.maxMin.value = dataMaxMinute
   dom.timeLineRangeSlider.value = dom.maxMin.value
 
   // 預設顏色
@@ -156,6 +158,7 @@ const renderChart = async () => {
   // console.log('colors:', colors)
 
   // chart option
+  xLabelTemp = []
   let options = {
     series: series,
     chart: {
@@ -175,21 +178,26 @@ const renderChart = async () => {
     },
     xaxis: {
       type: 'datetime',
+      // 設定 x 軸的最小值與最大值
+      min: new Date(2023, 1, 1, 0, 0, 0).getTime(),
       max: new Date(2023, 1, 1, 0, dom.maxMin.value, 0).getTime(),
       labels: {
         formatter: function (val) {
-          // 僅顯示每 10 分鐘的時間
+          // 顯示整數分鐘的時間，格式為 0, 10, 20, 30...
           let date = new Date(val);
           let minutes = date.getMinutes();
-          let hours = date.getHours();
-          if (minutes % 10 === 0) {
-            return `${minutes < 10 ? '0' : ''}${minutes}`;
-          } else {
-            return '';
-          }
+          // let xLabel = Math.floor(minutes / 10) * 10
+          // if (xLabelTemp.includes(xLabel)) {
+          //   console.log(xLabel)
+          //   xLabelTemp.push(xLabel)
+          //   return `${xLabel}`
+          // } else {
+          //   return ''
+          // }
+          return minutes % 5 === 0 ? `${minutes}` : '';
         }
       },
-      tickAmount: Math.ceil(dom.maxMin.value / 10) // 設定 x 軸刻度數量，間隔為 10 分鐘
+      tickAmount: Math.ceil(dom.maxMin.value / 5) // 刻度數量，間隔 10 分鐘
     },
     legend: {
       position: 'right'
@@ -203,8 +211,7 @@ const renderChart = async () => {
         return `時間: ${min1}:${sec1} - ${min2}:${sec2}`;
       }
     }
-};
-
+  };
 
   // apexchart init
   let chart = new ApexCharts(document.querySelector("#chart"), options);
@@ -241,8 +248,8 @@ const renderChart = async () => {
 }
 
 const timeLineRangeSliderChangeHandle = () => {
-    const value = dom.timeLineRangeSlider.value
-    dom.maxMin.value = value
+  const value = dom.timeLineRangeSlider.value
+  dom.maxMin.value = value
 }
 
 window.addEventListener('DOMContentLoaded', () => {

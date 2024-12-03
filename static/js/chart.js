@@ -12,6 +12,7 @@ const dom = {
   maxMin: document.getElementById('maxMin'),
   renderChartButton: document.getElementById('renderChartButton'),
   timeLineRangeSlider: document.getElementById('chart-time-line-min-and-max-range-slider'),
+  xLabelStep: document.getElementById('x-label-step'),
 }
 
 // 上傳檔案
@@ -186,18 +187,17 @@ const renderChart = async () => {
           // 顯示整數分鐘的時間，格式為 0, 10, 20, 30...
           let date = new Date(val);
           let minutes = date.getMinutes();
-          // let xLabel = Math.floor(minutes / 10) * 10
-          // if (xLabelTemp.includes(xLabel)) {
-          //   console.log(xLabel)
-          //   xLabelTemp.push(xLabel)
-          //   return `${xLabel}`
-          // } else {
-          //   return ''
-          // }
-          return minutes % 5 === 0 ? `${minutes}` : '';
+          if (minutes.toString() === dom.maxMin.value) {
+            return minutes
+          } else if (dom.xLabelStep.value !== '') {
+            const timeStep = dom.xLabelStep.value
+            return minutes % timeStep === 0 ? `${minutes}` : ''
+          } else {
+            return minutes
+          }
         }
       },
-      tickAmount: Math.ceil(dom.maxMin.value / 5) // 刻度數量，間隔 10 分鐘
+      tickAmount: Math.ceil(dom.maxMin.value / 1) // 刻度數量，間隔 10 分鐘
     },
     legend: {
       position: 'right'
